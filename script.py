@@ -14,7 +14,7 @@ def get_file_names(folder_path):
     prev = None
     for _, _, files in os.walk(folder_path):
         for file in files:
-            if re.search(r'FDA-2020-P-\d{4}-\d{4}_Citizen_Petition', file):
+            if re.search(r'FDA-2006-P-\d{4}-\d{4}_Citizen_Petition', file):
                 citizens.append(file)
             elif re.search(r'from_FDA', file):
                 prev = file
@@ -55,7 +55,7 @@ def wait_until_complete(image_path, confidence = 0.95):
         except Exception as e:
             continue
 
-folder = "2020"
+folder = "2006"
 get_file_names(folder)
 pyautogui.scroll(-5000)
 counter = 2
@@ -74,7 +74,7 @@ for file_name in citizens:
     move_mouse_to_button_and_click("python_copy.png")
     lst = eval(pyperclip.paste())
     wb = load_workbook("outputs_citizens.xlsx")
-    ws = wb.active
+    ws = wb['2006']
     ws.cell(row=counter, column=1).value = file_name
     for i, item in enumerate(lst):
         ws.cell(row=counter, column=i+2).value = item
