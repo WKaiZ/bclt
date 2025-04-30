@@ -21,7 +21,7 @@ def collect_bad_summaries(file_path, regex_pattern):
 
     for sheet in wb.worksheets:
         for row in sheet.iter_rows(values_only=True):
-            if any(pattern.search(cell) for cell in row):
+            if sum(pattern.search(cell) is not None for cell in row) >= 1:
                 files.append(row[0])
 
     return files
