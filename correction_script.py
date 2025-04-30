@@ -77,10 +77,12 @@ for file_name in responses:
     pyautogui.hotkey('enter')
     error = wait_until_complete("complete.png")
     if not error:
-        pyautogui.moveTo(1153, 149, duration=0.5)
-        pyautogui.click()
-        pyautogui.moveTo(1100, 800, duration=0.5)
-        pyautogui.click()
+        # pyautogui.moveTo(1153, 149, duration=0.5)
+        # pyautogui.click()
+        move_mouse_to_button_and_click("unable_extract.png")
+        # pyautogui.moveTo(1100, 800, duration=0.5)
+        # pyautogui.click()
+        move_mouse_to_button_and_click("cancel.png")
         pyautogui.hotkey('ctrl', 'a')
         pyautogui.hotkey('backspace')
         continue
