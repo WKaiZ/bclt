@@ -69,8 +69,7 @@ def remove_rows_with_duplicate_numbers(file_path):
                     rows_to_delete.append(idx)
                 else:
                     seen_numbers.update(row_numbers)
-
-        print(rows_to_delete)
+                    
         for row_idx in reversed(rows_to_delete):
             ws.delete_rows(row_idx)
 
