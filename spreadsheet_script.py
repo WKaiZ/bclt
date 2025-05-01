@@ -1,3 +1,10 @@
+"""
+Filename: spreadsheet_script.py
+Author: Wesley Zheng
+Date: 2025-4-29
+Description: ​This script automates the process of eliminating duplicate summaries for the same citizen petitions and responses.
+"""
+
 import re
 from openpyxl import load_workbook
 

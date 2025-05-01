@@ -1,3 +1,10 @@
+"""
+Filename: chatgpt_script.py
+Author: Wesley Zheng
+Date: 2025-4-20
+Description: ​This script automates the process of submitting a prompt to ChatGPT, uploading a file, and pasting the response into a spreadsheet.
+"""
+
 import os
 import pyautogui
 import pyperclip

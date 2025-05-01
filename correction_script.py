@@ -1,4 +1,10 @@
-import os
+"""
+Filename: correction_script.py
+Author: Wesley Zheng
+Date: 2025-4-29
+Description: ​This script automates the process of resubmitting a prompt to ChatGPT, uploading a file, and pasting the response into a spreadsheet.
+"""
+
 import pyautogui
 import pyperclip
 from openpyxl import load_workbook
