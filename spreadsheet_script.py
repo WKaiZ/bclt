@@ -24,7 +24,8 @@ def clean_excel_cells(file_path, regex_pattern):
 
     for sheet in wb.worksheets:
         for row in sheet.iter_rows(min_row = 2, min_col = 2):
-            for cell in row:
+            for cell in row[:5]:
+                print(cell.value)
                 new_value = pattern.sub('', cell.value)
                 if new_value != cell.value:
                     cell.value = new_value
@@ -160,8 +161,8 @@ Files:
     - "bad_summaries_responses.txt": Output text file for bad summaries of responses.
 
 """
-clean_excel_cells("outputs_citizens.xlsx", r'^.*:\s|^\d\.\s')
-clean_excel_cells("outputs_responses.xlsx", r'^.*:\s|^\d\.\s')
+clean_excel_cells("outputs_citizens.xlsx", r'^.*:\s|^\d\.\s|:contentReference.*')
+clean_excel_cells("outputs_responses.xlsx", r'^.*:\s|^\d\.\s|:contentReference.*')
 remove_rows_with_duplicate_numbers("outputs_responses.xlsx")
 remove_rows_with_duplicate_numbers("outputs_citizens.xlsx")
 bad_summaries = collect_bad_summaries("outputs_citizens.xlsx", r'Not Mentioned')

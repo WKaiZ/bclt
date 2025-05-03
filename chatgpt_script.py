@@ -15,7 +15,7 @@ citizens = []
 responses = []
 pyautogui.FAILSAFE = False
 pyautogui.PAUSE = 0.7
-prompt = """Extract the following details from the FDA petition document above: 1. Date of Petition: Identify the date on which the petition was submitted. 2. Identity of Submitting Entity: Specify the name of the individual, company, or organization that submitted the petition. 3. Representation Details: Determine if the submitting entity is representing another entity (e.g., law firm representing a company). If so, provide the name of the represented entity. 4. Cited Statutes or Regulations: List all statutes or regulations cited by the petitioner to justify their request (e.g., 505(q), 21 C.F.R. 10.30). 5. FDA Action Commented On: Identify which action or policy of the FDA the petitioner is commenting on (e.g., notice to manufacturers, guidance for industry, regulation, establishment of a reference listed drug). 6. Requested Action: Specify the action the petitioner wants the FDA to take. 7. Justification for Request: Summarize the reasons or justifications provided by the petitioner for requesting this action. Remove markdown and put each numbered item in a Python list. Do not use nested lists. Do not include any other text such as comments or explanations. Put in code box."""
+prompt = """Extract the following details from the FDA response document above: 1. Date of Response: Identify the date on which the FDA issued the response. 2. Responding FDA Center: Specify which FDA center or division responded to the petition (e.g., CDER, CBER, CDRH). 3. Response to Petition: Indicate the FDA's decision or action taken in response to the petition (e.g., approved, denied, partially approved, other). 4. Cited Statutes or Regulations: List all statutes or regulations cited by the FDA in its response. 5. Justification for Response: Summarize the reasoning or justifications provided by the FDA to support its decision. Ensure that the extracted information is accurate, relevant, and organized in a structured format, such as a bullet list or table. If any information is not explicitly stated, indicate 'Not Mentioned'. Remove markdown and put each numbered item in a Python list. Do not use nested lists. Do not include any other text such as comments or explanations. Put in code box."""
 
 
 def get_file_names(folder_path):
@@ -34,19 +34,21 @@ def get_file_names(folder_path):
     """
     prev = None
     for _, _, files in os.walk(folder_path):
+        prev = None
         for file in files:
             if re.search(r'FDA-\d{4}-P-\d{4}-0001', file) and int(re.findall(r'\d{4}', file)[1]) > 3484:
                 citizens.append(file)
             elif re.search(r'from_FDA', file):
                 prev = file
             if prev and prev[:16] != file[:16]:
-                responses.append(prev)
+                if int(re.findall(r'\d{4}', file)[1]) > 3357:
+                    responses.append(prev)
                 prev = None
     responses.append(prev)
         
             
 
-def find_button(image_path, confidence = 0.8):
+def find_button(image_path, confidence = 0.85):
     """
     Locate a button on the screen by matching a provided image with a specified confidence level.
 
@@ -160,7 +162,7 @@ folder = "2024"
 get_file_names(folder)
 year = "2024"
 print(len(responses), "files found")
-counter = 2
+counter = 86
 total = len(responses)
 for file_name in responses:
     move_mouse_to_button_and_click("prompt.png")
@@ -172,7 +174,8 @@ for file_name in responses:
     error = wait_until_complete("complete.png")
     if not error:
         move_mouse_to_button_and_click("unable_extract.png")
-        move_mouse_to_button_and_click("cancel.png")
+        pyautogui.moveTo(1100, 800, duration=0.5)
+        pyautogui.click()
         pyautogui.hotkey('ctrl', 'a')
         pyautogui.hotkey('backspace')
         continue
