@@ -35,7 +35,7 @@ def get_file_names(folder_path):
     prev = None
     for _, _, files in os.walk(folder_path):
         for file in files:
-            if re.search(r'FDA-\d{4}-P-\d{4}-0001', file):
+            if re.search(r'FDA-\d{4}-P-\d{4}-0001', file) and int(re.findall(r'\d{4}', file)[1]) > 3484:
                 citizens.append(file)
             elif re.search(r'from_FDA', file):
                 prev = file
@@ -159,40 +159,10 @@ Note:
 folder = "2024"
 get_file_names(folder)
 year = "2024"
-print(len(citizens), "files found")
-counter = 2
-total = len(citizens)
-for file_name in citizens:
-    move_mouse_to_button_and_click("prompt.png")
-    paste_text(prompt)
-    move_mouse_to_button_and_click("upload.png")
-    move_mouse_to_button_and_click("upload_from_computer.png")
-    paste_text(f"C:\\Users\\wesle\\OneDrive\\Desktop\\bclt\\{year}\\{file_name}")
-    pyautogui.hotkey('enter')
-    error = wait_until_complete("complete.png")
-    if not error:
-        move_mouse_to_button_and_click("unable_extract.png")
-        move_mouse_to_button_and_click("cancel.png")
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.hotkey('backspace')
-        continue
-    move_mouse_to_button_and_click("ask.png")
-    wait_until_complete("voice.png")
-    move_mouse_to_button_and_click("python_copy.png")
-    lst = eval(pyperclip.paste())
-    wb = load_workbook("outputs_citizens.xlsx")
-    ws = wb[year]
-    ws.cell(row=counter, column=1).value = file_name
-    for i, item in enumerate(lst):
-        ws.cell(row=counter, column=i+2).value = item
-    counter += 1
-    wb.save("outputs_citizens.xlsx")
-    wb.close()
-
+print(len(responses), "files found")
 counter = 2
 total = len(responses)
-print(len(responses), "files found")
-for file_name in citizens:
+for file_name in responses:
     move_mouse_to_button_and_click("prompt.png")
     paste_text(prompt)
     move_mouse_to_button_and_click("upload.png")

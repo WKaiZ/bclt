@@ -18,10 +18,6 @@ def clean_excel_cells(file_path, regex_pattern):
 
     Returns:
         None: The function modifies the Excel file in place and saves the changes.
-
-    Example:
-        clean_excel_cells("example.xlsx", r'^.*:\s|^\d\.\s')
-        # Removes text matching the pattern from cells in the Excel file.
     """
     wb = load_workbook(file_path)
     pattern = re.compile(regex_pattern)
