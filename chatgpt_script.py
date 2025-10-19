@@ -17,7 +17,6 @@ pyautogui.FAILSAFE = False
 pyautogui.PAUSE = 0.7
 prompt = """Extract the following details from the FDA response document above: 1. Date of Response: Identify the date on which the FDA issued the response. 2. Responding FDA Center: Specify which FDA center or division responded to the petition (e.g., CDER, CBER, CDRH). 3. Response to Petition: Indicate the FDA's decision or action taken in response to the petition (e.g., approved, denied, partially approved, other). 4. Cited Statutes or Regulations: List all statutes or regulations cited by the FDA in its response. 5. Justification for Response: Summarize the reasoning or justifications provided by the FDA to support its decision. Ensure that the extracted information is accurate, relevant, and organized in a structured format, such as a bullet list or table. If any information is not explicitly stated, indicate 'Not Mentioned'. Remove markdown and put each numbered item in a Python list. Do not use nested lists. Do not include any other text such as comments or explanations. Put in code box."""
 
-
 def get_file_names(folder_path):
     """
     Traverse the directory tree starting at 'folder_path' to identify and collect filenames matching specific patterns.
@@ -36,19 +35,19 @@ def get_file_names(folder_path):
     for _, _, files in os.walk(folder_path):
         prev = None
         for file in files:
-            if re.search(r'FDA-\d{4}-P-\d{4}-0001', file) and int(re.findall(r'\d{4}', file)[1]) > 3484:
+            if re.search(r'FDA-\d{4}-P-\d{4}-0001', file) and int(re.findall(r'\d{4}', file)[1]) >= 4645:
                 citizens.append(file)
             elif re.search(r'from_FDA', file):
                 prev = file
             if prev and prev[:16] != file[:16]:
-                if int(re.findall(r'\d{4}', file)[1]) > 3357:
+                if int(re.findall(r'\d{4}', file)[1]) >= 3545:
                     responses.append(prev)
                 prev = None
     responses.append(prev)
         
             
 
-def find_button(image_path, confidence = 0.85):
+def find_button(image_path, confidence = 0.7):
     """
     Locate a button on the screen by matching a provided image with a specified confidence level.
 
@@ -115,7 +114,7 @@ def detect_error(image_path, confidence = 0.7):
     except Exception as e:
         return False
 
-def wait_until_complete(image_path, confidence = 0.95):
+def wait_until_complete(image_path, confidence = 0.7):
     """
     Continuously monitors the screen for the appearance of a specific image, indicating task completion.
     
@@ -158,17 +157,19 @@ Note:
 - Relies on GUI automation using `pyautogui` and clipboard operations with `pyperclip`.
 - Requires Excel files ('outputs_citizens.xlsx' and 'outputs_responses.xlsx') with a sheet named '2024'.
 """
-folder = "2024"
+folder = "2019"
 get_file_names(folder)
-year = "2024"
+year = "2019"
 print(len(responses), "files found")
-counter = 86
+counter = 133
 total = len(responses)
 for file_name in responses:
     move_mouse_to_button_and_click("prompt.png")
     paste_text(prompt)
     move_mouse_to_button_and_click("upload.png")
     move_mouse_to_button_and_click("upload_from_computer.png")
+    import time
+    time.sleep(1)
     paste_text(f"C:\\Users\\wesle\\OneDrive\\Desktop\\bclt\\{year}\\{file_name}")
     pyautogui.hotkey('enter')
     error = wait_until_complete("complete.png")
@@ -180,6 +181,7 @@ for file_name in responses:
         pyautogui.hotkey('backspace')
         continue
     move_mouse_to_button_and_click("ask.png")
+    pyautogui.moveTo(200, 400, duration=0.5)
     wait_until_complete("voice.png")
     move_mouse_to_button_and_click("python_copy.png")
     lst = eval(pyperclip.paste())

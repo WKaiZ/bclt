@@ -25,7 +25,6 @@ def clean_excel_cells(file_path, regex_pattern):
     for sheet in wb.worksheets:
         for row in sheet.iter_rows(min_row = 2, min_col = 2):
             for cell in row[:5]:
-                print(cell.value)
                 new_value = pattern.sub('', cell.value)
                 if new_value != cell.value:
                     cell.value = new_value
@@ -52,9 +51,10 @@ def collect_bad_summaries(file_path, regex_pattern):
     files = []
 
     for sheet in wb.worksheets:
-        for row in sheet.iter_rows(values_only=True):
-            if sum(pattern.search(cell) is not None for cell in row) >= 1:
-                files.append(row[0])
+        for row in sheet.iter_rows():
+            print(sheet, row[0].row)
+            if sum(pattern.search(cell.value) is not None for cell in row) >= 1:
+                files.append(row[0].value)
 
     return files
 

@@ -29,7 +29,7 @@ def read_lines_to_list(file_path):
         lines = [line.rstrip() for line in file]
     return lines
 
-def find_button(image_path, confidence = 0.8):
+def find_button(image_path, confidence = 0.7):
     """
     See chatgpt_script.py.
     """
@@ -68,7 +68,7 @@ def detect_error(image_path, confidence = 0.7):
     except Exception as e:
         return False
 
-def wait_until_complete(image_path, confidence = 0.95):
+def wait_until_complete(image_path, confidence = 0.7):
     """
     See chatgpt_script.py.
     """
@@ -127,7 +127,7 @@ citizens = read_lines_to_list('bad_summaries_petitions.txt')
 responses  = read_lines_to_list('bad_summaries_responses.txt')
 pyautogui.FAILSAFE = False
 pyautogui.PAUSE = 0.7
-prompt = """Extract the following details from the FDA response document above: 1. Date of Response: Identify the date on which the FDA issued the response. 2. Responding FDA Center: Specify which FDA center or division responded to the petition (e.g., CDER, CBER, CDRH). 3. Response to Petition: Indicate the FDA's decision or action taken in response to the petition (e.g., approved, denied, partially approved, other). 4. Cited Statutes or Regulations: List all statutes or regulations cited by the FDA in its response. 5. Justification for Response: Summarize the reasoning or justifications provided by the FDA to support its decision. Ensure that the extracted information is accurate, relevant, and organized in a structured format, such as a bullet list or table. If any information is not explicitly stated, indicate 'Not Mentioned'. Remove markdown and put each numbered item in a Python list. Do not use nested lists. Do not include any other text such as comments or explanations."""
+prompt = """Extract the following details from the FDA response document above: 1. Date of Response: Identify the date on which the FDA issued the response. 2. Responding FDA Center: Specify which FDA center or division responded to the petition (e.g., CDER, CBER, CDRH). 3. Response to Petition: Indicate the FDA's decision or action taken in response to the petition (e.g., approved, denied, partially approved, other). 4. Cited Statutes or Regulations: List all statutes or regulations cited by the FDA in its response. 5. Justification for Response: Summarize the reasoning or justifications provided by the FDA to support its decision. Ensure that the extracted information is accurate, relevant, and organized in a structured format, such as a bullet list or table. If any information is not explicitly stated, indicate 'Not Mentioned'. Remove markdown and put each numbered item in a Python list. Do not use nested lists. Do not include any other text such as comments or explanations. Put in code box."""
 
 """
 See chatgpt_script.py.
@@ -143,7 +143,7 @@ for file_name in responses:
     error = wait_until_complete("complete.png")
     if not error:
         move_mouse_to_button_and_click("unable_extract.png")
-        move_mouse_to_button_and_click("cancel.png")
+        pyautogui.moveTo(1100, 800, duration=0.5)
         pyautogui.hotkey('ctrl', 'a')
         pyautogui.hotkey('backspace')
         continue
