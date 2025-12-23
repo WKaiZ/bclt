@@ -15,7 +15,8 @@ citizens = []
 responses = []
 pyautogui.FAILSAFE = False
 pyautogui.PAUSE = 0.7
-prompt = """Extract the following details from the FDA response document above: 1. Date of Response: Identify the date on which the FDA issued the response. 2. Responding FDA Center: Specify which FDA center or division responded to the petition (e.g., CDER, CBER, CDRH). 3. Response to Petition: Indicate the FDA's decision or action taken in response to the petition (e.g., approved, denied, partially approved, other). 4. Cited Statutes or Regulations: List all statutes or regulations cited by the FDA in its response. 5. Justification for Response: Summarize the reasoning or justifications provided by the FDA to support its decision. Ensure that the extracted information is accurate, relevant, and organized in a structured format, such as a bullet list or table. If any information is not explicitly stated, indicate 'Not Mentioned'. Remove markdown and put each numbered item in a Python list. Do not use nested lists. Do not include any other text such as comments or explanations. Put in code box."""
+# TODO: Customize this prompt based on the document type and your requirements.
+prompt = """Extract the following details from the FDA petition document above: 1. Date of Petition: Identify the date on which the petition was submitted. 2. Identity of Submitting Entity: Specify the name of the individual, company, or organization that submitted the petition. 3. Representation Details: Determine if the submitting entity is representing another entity (e.g., law firm representing a company). If so, provide the name of the represented entity. 4. Cited Statutes or Regulations: List all statutes or regulations cited by the petitioner to justify their request (e.g., 505(q), 21 C.F.R. 10.30). 5. FDA Action Commented On: Identify which action or policy of the FDA the petitioner is commenting on (e.g., notice to manufacturers, guidance for industry, regulation, establishment of a reference listed drug). 6. Requested Action: Specify the action the petitioner wants the FDA to take. 7. Justification for Request: Summarize the reasons or justifications provided by the petitioner for requesting this action. Remove markdown and put each numbered item in a Python list. Do not use nested lists. Do not include any other text such as comments or explanations. Put in code box."""
 
 def get_file_names(folder_path):
     """
@@ -35,12 +36,12 @@ def get_file_names(folder_path):
     for _, _, files in os.walk(folder_path):
         prev = None
         for file in files:
-            if re.search(r'FDA-\d{4}-P-\d{4}-0001', file) and int(re.findall(r'\d{4}', file)[1]) >= 4645:
+            if re.search(r'FDA-\d{4}-P-\d{4}-0001', file) and int(re.findall(r'\d{4}', file)[1]) >= 2820:
                 citizens.append(file)
             elif re.search(r'from_FDA', file):
                 prev = file
             if prev and prev[:16] != file[:16]:
-                if int(re.findall(r'\d{4}', file)[1]) >= 3545:
+                if int(re.findall(r'\d{4}', file)[1]) >= 3540:
                     responses.append(prev)
                 prev = None
     responses.append(prev)
@@ -79,7 +80,7 @@ def move_mouse_to_button_and_click(image_path):
     Returns:
         None
     """
-    button_location = find_button(image_path)
+    button_location = find_button(image_path, 0.9)
     if button_location is not None:
         x, y = pyautogui.center(button_location)
         pyautogui.moveTo(x, y, duration=0.5)
@@ -157,40 +158,40 @@ Note:
 - Relies on GUI automation using `pyautogui` and clipboard operations with `pyperclip`.
 - Requires Excel files ('outputs_citizens.xlsx' and 'outputs_responses.xlsx') with a sheet named '2024'.
 """
-folder = "2019"
+# TODO: Set the folder name containing the documents.
+folder = "2015"
 get_file_names(folder)
-year = "2019"
-print(len(responses), "files found")
-counter = 133
-total = len(responses)
-for file_name in responses:
+# TODO: Set the year corresponding to the documents.
+year = "2015"
+print(len(citizens), "files found")
+# TODO: Set the starting row in the spreadsheet to avoid overwriting existing data.
+counter = 83
+total = len(citizens)
+for file_name in citizens:
     move_mouse_to_button_and_click("prompt.png")
     paste_text(prompt)
     move_mouse_to_button_and_click("upload.png")
     move_mouse_to_button_and_click("upload_from_computer.png")
     import time
     time.sleep(1)
+    # TODO: Update this path to match your local directory structure.
     paste_text(f"C:\\Users\\wesle\\OneDrive\\Desktop\\bclt\\{year}\\{file_name}")
     pyautogui.hotkey('enter')
-    error = wait_until_complete("complete.png")
-    if not error:
-        move_mouse_to_button_and_click("unable_extract.png")
-        pyautogui.moveTo(1100, 800, duration=0.5)
-        pyautogui.click()
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.hotkey('backspace')
-        continue
+    error = wait_until_complete("complete.png", 0.9)
+    time.sleep(40)
     move_mouse_to_button_and_click("ask.png")
     pyautogui.moveTo(200, 400, duration=0.5)
     wait_until_complete("voice.png")
     move_mouse_to_button_and_click("python_copy.png")
     lst = eval(pyperclip.paste())
-    wb = load_workbook("outputs_responses.xlsx")
+    # TODO: Change the spreadsheet filename if different.
+    wb = load_workbook("outputs_citizens.xlsx")
     ws = wb[year]
     ws.cell(row=counter, column=1).value = file_name
     for i, item in enumerate(lst):
         ws.cell(row=counter, column=i+2).value = item
     counter += 1
-    wb.save("outputs_responses.xlsx")
+    # TODO: Update the save path if needed.
+    wb.save("outputs_citizens.xlsx")
     wb.close()
 

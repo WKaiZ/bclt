@@ -22,7 +22,7 @@ This set of scripts automates the process of uploading petition/response documen
 
 1. Place the petition/response folder within the `bclt` directory.
 2. Open a ChatGPT conversation (new or existing). Ensure the area above the chatbox is blank; scroll down if necessary.
-3. Replace all images in the repository with screenshots from your computer. Even if they look identical, pixel differences can cause recognition errors. Name the screenshots exactly as in the repository and ensure they closely resemble the originals.
+3. Replace all images in the repository with screenshots from your computer. Even if they look identical, pixel differences can cause recognition errors. Name the screenshots exactly as in the repository and ensure they closely resemble the originals. When taking screenshots, make sure the buttons and their functions are clearly visible so you can interpret what each button does.
 4. Review `chatgpt_script.py`. This is the primary script for summarizing petitions/responses. Modify the following according to your setup:
    - `prompt`: Ensure the correct prompt is used for the document type.
    - `folder`: Name of the folder containing the documents.

@@ -5,10 +5,12 @@ Date: 2025-4-29
 Description: ​This script automates the process of resubmitting a prompt to ChatGPT, uploading a file, and pasting the response into a spreadsheet.
 """
 
+import time
 import pyautogui
 import pyperclip
 from openpyxl import load_workbook
 import re
+import ast
 
 
 def read_lines_to_list(file_path):
@@ -141,16 +143,23 @@ for file_name in responses:
     paste_text(f"C:\\Users\\wesle\\OneDrive\\Desktop\\bclt\\{year}\\{file_name}")
     pyautogui.hotkey('enter')
     error = wait_until_complete("complete.png")
-    if not error:
-        move_mouse_to_button_and_click("unable_extract.png")
-        pyautogui.moveTo(1100, 800, duration=0.5)
-        pyautogui.hotkey('ctrl', 'a')
-        pyautogui.hotkey('backspace')
-        continue
+    time.sleep(40)
     move_mouse_to_button_and_click("ask.png")
     wait_until_complete("voice.png")
+    time.sleep(15)  # Additional delay to ensure response is ready
     move_mouse_to_button_and_click("python_copy.png")
-    lst = eval(pyperclip.paste())
+    clipboard_content = pyperclip.paste()
+    # Remove code block markers if present
+    if clipboard_content.startswith('```') and '```' in clipboard_content:
+        start = clipboard_content.find('\n') + 1
+        end = clipboard_content.rfind('```')
+        clipboard_content = clipboard_content[start:end].strip()
+    try:
+        lst = ast.literal_eval(clipboard_content)
+    except (ValueError, SyntaxError) as e:
+        print(f"Failed to parse clipboard content for {file_name}: {clipboard_content}")
+        print("Skipping this file.")
+        continue
     wb = load_workbook("outputs_responses.xlsx")
     ws = wb[year]
     r, _ = find_cell_coordinates("outputs_responses.xlsx", year, file_name)
